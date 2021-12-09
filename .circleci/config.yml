@@ -5,9 +5,35 @@ jobs:
 
     steps:
       - checkout
+
+      - run:
+          name: "Prepare Environment"
+          command: |
+            sudo apt update
+            sudo docker-php-ext-install zip
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "composer.json" }}
+            - v1-dependencies-
+
+      - run:
+          name: "Install Dependencies"
+          command: composer install -n --prefer-dist
+
+      - save_cache:
+          key: v1-dependencies-{{ checksum "composer.json" }}
+          paths:
+            - ./vendor
+
+      - run:
+          name: "Run PHP lint"
+          command: ./vendor/bin/phplint 
+
+      - checkout
       - sonarcloud/scan:
           sonar_token_variable_name: SONAR_TOKEN 
       
+
 orbs:
   sonarcloud: sonarsource/sonarcloud@1.0.1
 
