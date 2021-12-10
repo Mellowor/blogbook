@@ -34,6 +34,14 @@ $(document).ready(function(){
     
 });
 
+async function loadusers(){
+    data = await fetch("functions.php?useronline=result")
+    data = await data.json();
+    document.querySelector(".useronline").innerHTML = data;   
+}
+
+
+/* Causing memory leaks and massive event listner duplication
 function loadusers(){
     
     
@@ -46,7 +54,8 @@ function loadusers(){
     
     
     
-}
+}*/
+
 setInterval(function(){
     loadusers();
 },500);
